@@ -224,4 +224,23 @@ defmodule MeowNx.Crossover do
 
     0.5 * ((1 + beta) * x + (1 - beta) * y)
   end
+
+  # defn differential(parents, opts \\ []) do
+  #   opts = keyword!(opts, F: 0.5)
+  #   f = opts[:F]
+
+  #   {n, _length} = Nx.shape(parents)
+  #   fun = fn tensor ->
+  #     shuffled_rows = Nx.shuffle(tensor)
+  #     shuffled_rows
+  #     |> Nx.slice([0], [1])
+  #     |> Nx.subtract(Nx.slice(shuffled_rows, [1], [1]))
+  #     |> Nx.multiply(f)
+  #     |> Nx.add(Nx.slice(shuffled_rows, [2], [1]))
+  #   end
+
+  #   transformed_parents = ???
+
+  #   Utils.interleave_rows(Nx.concatenate([parents, transformed_parents]))
+  # end
 end

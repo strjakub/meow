@@ -58,6 +58,16 @@ defmodule MeowNx.Utils do
     |> Nx.reshape({twice_n, m})
   end
 
+  defn interleave_rows(t) do
+    {n, m} = Nx.shape(t)
+    half_n = div(n, 2)
+
+    t
+    |> Nx.reshape({2, half_n, m})
+    |> Nx.transpose(axes: [0, 1])
+    |> Nx.reshape({n, m})
+  end
+
   @doc """
   Returns the cumulative sum of elements in the given
   1-dimensional tensor.

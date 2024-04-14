@@ -35,7 +35,7 @@ Algorithms in this group are almost certain to be possible to implement as part 
 
 ### bat algorithm
 - requires best specimen
--  bats move with some velocity
+- bats move with some velocity
 - velocity is dependent on old velocity and random vector
 - position is dependent on old position and velocity
 
