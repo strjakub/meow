@@ -2,7 +2,9 @@
 
 Mix.install([
   {:meow, "~> 0.1.0-dev", github: "strjakub/meow", branch: "main"},
-  {:nx, "~> 0.3.0"}
+  {:nx, "~> 0.3.0"},
+  {:vega_lite, "~> 0.1.1"},
+  {:jason, "~> 1.4"},
   # {:exla, "~> 0.3.0"}
 ])
 
@@ -39,11 +41,11 @@ algorithm =
     # A single pipeline corresponds to a single population
     Meow.pipeline([
       # Define a number of evolutionary steps that the population goes through
-      MeowNx.Ops.selection_tournament(1.0),
       MeowNx.Ops.shuffle_rows(),
       MeowNx.Ops.crossover_uniform(0.5),
       MeowNx.Ops.crossover_commensalism(),
-      MeowNx.Ops.mutation_replace_uniform(0.001, -5.12, 5.12),
+      MeowNx.Ops.mutation_parasitism(),
+      MeowNx.Ops.pairwise_best(),
       MeowNx.Ops.log_metrics(
         %{
           fitness_max: &MeowNx.Metric.fitness_max/2,
@@ -59,4 +61,12 @@ algorithm =
 # Execute the above algorithm
 
 report = Meow.run(algorithm)
-report |> Meow.Report.format_summary() |> IO.puts()
+%{population_reports: [%{population: population}]} = report
+
+IO.puts("\nLogged metrics:")
+IO.inspect(population.log.metrics)
+
+report_path = Path.expand("tmp/report.html")
+report_path |> Path.dirname() |> File.mkdir_p!()
+:ok = Meow.Report.export_html(report, report_path)
+IO.puts("Report saved to #{report_path}")

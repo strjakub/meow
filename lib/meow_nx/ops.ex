@@ -89,6 +89,21 @@ defmodule MeowNx.Ops do
     }
   end
 
+  @doc type: :selection
+  def pairwise_best() do
+    %Op{
+      name: "[Nx] Selection: pairwise_best",
+      requires_fitness: true,
+      invalidates_fitness: false,
+      in_representations: @representations,
+      impl: fn population, _ctx ->
+        Population.map_genomes_and_fitness(population, fn genomes, fitness ->
+          Selection.pairwise_best(genomes, fitness)
+        end)
+      end
+    }
+  end
+
   @doc """
   Builds a natural selection operation.
 
@@ -305,6 +320,21 @@ defmodule MeowNx.Ops do
       impl: fn population, _ctx ->
         Population.map_genomes(population, fn genomes ->
           Mutation.replace_uniform(genomes, opts)
+        end)
+      end
+    }
+  end
+
+  @doc type: :mutation
+  def mutation_parasitism() do
+    %Op{
+      name: "[Nx] Mutation: parasitism",
+      requires_fitness: false,
+      invalidates_fitness: true,
+      in_representations: [MeowNx.real_representation()],
+      impl: fn population, _ctx ->
+        Population.map_genomes(population, fn genomes ->
+          Mutation.parasitism_mutation(genomes)
         end)
       end
     }

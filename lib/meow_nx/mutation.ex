@@ -49,6 +49,15 @@ defmodule MeowNx.Mutation do
     Nx.select(mutate?, mutated, genomes)
   end
 
+  defn parasitism_mutation(genomes) do
+    {n, _length} = Nx.shape(genomes)
+    genomes_copy = Nx.take(genomes, Nx.random_uniform({n}, 0, n), axis: 0)
+
+    mutated_genomes = replace_uniform(genomes_copy, [probability: 0.001, min: -5.12, max: 5.12])  # arg
+
+    Nx.concatenate([genomes, mutated_genomes]) |> MeowNx.Utils.interleave_rows()
+  end
+
   @doc """
   Performs bit-flip mutation.
 
