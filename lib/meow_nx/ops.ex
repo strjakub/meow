@@ -520,7 +520,7 @@ defmodule MeowNx.Ops do
   def shuffle_rows() do
     %Op{
       name: "[Nx] Other: shuffle order of specimens",
-      requires_fitness: false,
+      requires_fitness: true,
       invalidates_fitness: false,
       in_representations: :any,
       impl: fn population, _ctx ->
