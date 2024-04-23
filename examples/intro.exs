@@ -1,9 +1,9 @@
 # Install Meow and Nx for numerical computing
 
 Mix.install([
-  {:meow, "~> 0.1.0-dev", github: "jonatanklosko/meow"},
-  {:nx, "~> 0.3.0"},
-  {:exla, "~> 0.3.0"}
+  {:meow, "~> 0.1.0-dev", github: "strjakub/meow"},
+  {:nx, "~> 0.3.0"}
+  # {:exla, "~> 0.3.0"}
 ])
 
 Nx.Defn.global_default_options(compiler: EXLA)
@@ -40,10 +40,12 @@ algorithm =
     Meow.pipeline([
       # Define a number of evolutionary steps that the population goes through
       MeowNx.Ops.selection_tournament(1.0),
+      MeowNx.Ops.shuffle_rows(),
       MeowNx.Ops.crossover_uniform(0.5),
+      MeowNx.Ops.crossover_commensalism(),
       MeowNx.Ops.mutation_replace_uniform(0.001, -5.12, 5.12),
       MeowNx.Ops.log_best_individual(),
-      Meow.Ops.max_generations(5_000)
+      Meow.Ops.max_generations(1_000)
     ])
   )
 

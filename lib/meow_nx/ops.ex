@@ -225,6 +225,22 @@ defmodule MeowNx.Ops do
     }
   end
 
+  @doc type: :crossover
+  @spec crossover_commensalism() :: Meow.Op.t()
+  def crossover_commensalism() do
+    %Op{
+      name: "[Nx] Crossover: commensalism",
+      requires_fitness: false,
+      invalidates_fitness: true,
+      in_representations: @representations,
+      impl: fn population, _ctx ->
+        Population.map_genomes(population, fn genomes ->
+          Crossover.commensalism(genomes)
+        end)
+      end
+    }
+  end
+
   @doc """
   Builds a blend-alpha crossover operation.
 
@@ -465,6 +481,26 @@ defmodule MeowNx.Ops do
         Population.map_genomes(population, fn genomes ->
           clip(genomes, min, max)
         end)
+      end
+    }
+  end
+
+  @doc type: :other
+  @spec shuffle_rows() :: Meow.Op.t()
+  def shuffle_rows() do
+    %Op{
+      name: "[Nx] Other: shuffle order of specimens",
+      requires_fitness: false,
+      invalidates_fitness: false,
+      in_representations: :any,
+      impl: fn population, _ctx ->
+        {n, _length} = Nx.shape(population.genomes)
+        idx = Nx.shuffle(Nx.iota({n}))
+
+        genomes = Nx.take(population.genomes, idx, axis: 0)
+        fitness = Nx.take(population.fitness, idx, axis: 0)
+
+        %{population | genomes: genomes, fitness: fitness}
       end
     }
   end

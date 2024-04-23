@@ -129,6 +129,17 @@ defmodule MeowNx.Crossover do
     Nx.select(swap?, swapped_parents, parents)
   end
 
+  defn commensalism(parents) do
+    {n, length} = Nx.shape(parents)
+
+    shuffled_parents = Nx.take(parents, Nx.shuffle(Nx.iota(n)), axis: 0)
+
+    idx = Nx.random_uniform({n, 1}, 1, length)
+    swap? = Nx.less_equal(idx, Nx.iota({1, length}))
+
+    Nx.select(swap?, shuffled_parents, parents)
+  end
+
   @doc """
   Performs blend-alpha crossover, also referred to as BLX-alpha.
 
