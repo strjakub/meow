@@ -70,8 +70,8 @@ defmodule MeowNx.Selection do
 
     winning_genomes =
       wins?
-      |> Nx.reshape({n, 1})
-      |> Nx.broadcast({n, length})
+      |> Nx.reshape({div(n, 2), 1})
+      |> Nx.broadcast({div(n, 2), length})
       |> Nx.select(parents1, parents2)
 
     {winning_genomes, winning_fitness}
