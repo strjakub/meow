@@ -64,7 +64,7 @@ defmodule MeowNx.Utils do
 
     t
     |> Nx.reshape({2, half_n, m})
-    |> Nx.transpose(axes: [0, 1])
+    |> Nx.transpose(axes: [1, 0, 2])
     |> Nx.reshape({n, m})
   end
 
