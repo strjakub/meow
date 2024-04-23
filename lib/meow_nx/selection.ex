@@ -56,7 +56,7 @@ defmodule MeowNx.Selection do
   defn pairwise_best(genomes, fitness) do
     {n, length} = Nx.shape(genomes)
 
-    idx1 = Nx.iota({n / 2}) * 2
+    idx1 = Nx.iota({div(n, 2)}) * 2
     idx2 = idx1 + 1
 
     parents1 = Nx.take(genomes, idx1)
