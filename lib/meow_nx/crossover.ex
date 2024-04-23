@@ -132,7 +132,7 @@ defmodule MeowNx.Crossover do
   defn commensalism(parents) do
     {n, length} = Nx.shape(parents)
 
-    shuffled_parents = Nx.take(parents, Nx.shuffle(Nx.iota(n)), axis: 0)
+    shuffled_parents = Nx.take(parents, Nx.shuffle(Nx.iota({n})), axis: 0)
 
     idx = Nx.random_uniform({n, 1}, 1, length)
     swap? = Nx.less_equal(idx, Nx.iota({1, length}))

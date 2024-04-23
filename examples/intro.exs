@@ -1,12 +1,12 @@
 # Install Meow and Nx for numerical computing
 
 Mix.install([
-  {:meow, "~> 0.1.0-dev", github: "strjakub/meow"},
+  {:meow, "~> 0.1.0-dev", github: "strjakub/meow", branch: "main"},
   {:nx, "~> 0.3.0"}
   # {:exla, "~> 0.3.0"}
 ])
 
-Nx.Defn.global_default_options(compiler: EXLA)
+# Nx.Defn.global_default_options(compiler: EXLA)
 
 # Define the evaluation function, in this case using Nx to work with MeowNx
 
@@ -44,7 +44,14 @@ algorithm =
       MeowNx.Ops.crossover_uniform(0.5),
       MeowNx.Ops.crossover_commensalism(),
       MeowNx.Ops.mutation_replace_uniform(0.001, -5.12, 5.12),
-      MeowNx.Ops.log_best_individual(),
+      MeowNx.Ops.log_metrics(
+        %{
+          fitness_max: &MeowNx.Metric.fitness_max/2,
+          fitness_mean: &MeowNx.Metric.fitness_mean/2,
+          fitness_sd: &MeowNx.Metric.fitness_sd/2
+        },
+        interval: 100
+      ),
       Meow.Ops.max_generations(1_000)
     ])
   )
