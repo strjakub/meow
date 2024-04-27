@@ -341,7 +341,7 @@ defmodule MeowNx.Ops do
   end
 
   @doc type: :mutation
-  def whale(iterations) do
+  def whale(iterations, b) do
     %Op{
       name: "[Nx] Mutation: whale",
       requires_fitness: true,
@@ -349,7 +349,7 @@ defmodule MeowNx.Ops do
       in_representations: [MeowNx.real_representation()],
       impl: fn population, _ctx ->
         Population.map_genomes_and_fitness(population, fn genomes, fitness ->
-          Mutation.whale_mutation(genomes, fitness, population.generation, iterations)
+          Mutation.whale_mutation(genomes, fitness, population.generation, iterations, b)
         end)
       end
     }

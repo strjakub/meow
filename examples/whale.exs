@@ -8,10 +8,10 @@ Mix.install([
   {:nx, "~> 0.3.0"},
   {:vega_lite, "~> 0.1.1"},
   {:jason, "~> 1.4"},
-  # {:exla, "~> 0.3.0"}
+  {:exla, "~> 0.3.0"}
 ])
 
-# Nx.Defn.global_default_options(compiler: EXLA)
+Nx.Defn.global_default_options(compiler: EXLA)
 
 # Define the evaluation function, in this case using Nx to work with MeowNx
 
@@ -44,16 +44,16 @@ algorithm =
     # A single pipeline corresponds to a single population
     Meow.pipeline([
       # Define a number of evolutionary steps that the population goes through
-      MeowNx.Ops.whale(1_000),
+      MeowNx.Ops.whale(300, 0.01),
       MeowNx.Ops.log_metrics(
         %{
           fitness_max: &MeowNx.Metric.fitness_max/2,
           fitness_mean: &MeowNx.Metric.fitness_mean/2,
           fitness_sd: &MeowNx.Metric.fitness_sd/2
         },
-        interval: 100
+        interval: 1
       ),
-      Meow.Ops.max_generations(1_000)
+      Meow.Ops.max_generations(300)
     ])
   )
 
