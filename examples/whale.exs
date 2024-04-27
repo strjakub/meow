@@ -1,7 +1,10 @@
 # Install Meow and Nx for numerical computing
 
+{ out, _} = System.cmd("git", ["rev-parse", "HEAD"])
+rev = String.trim(out, "\n")
+
 Mix.install([
-  {:meow, "~> 0.1.0-dev", github: "strjakub/meow", branch: "main"},
+  {:meow, "~> 0.1.0-dev", github: "strjakub/meow", ref: rev},
   {:nx, "~> 0.3.0"},
   {:vega_lite, "~> 0.1.1"},
   {:jason, "~> 1.4"},
@@ -41,7 +44,7 @@ algorithm =
     # A single pipeline corresponds to a single population
     Meow.pipeline([
       # Define a number of evolutionary steps that the population goes through
-      MeowNx.Ops.whale(5_000),
+      MeowNx.Ops.whale(1_000),
       MeowNx.Ops.log_metrics(
         %{
           fitness_max: &MeowNx.Metric.fitness_max/2,
@@ -50,7 +53,7 @@ algorithm =
         },
         interval: 100
       ),
-      Meow.Ops.max_generations(5_000)
+      Meow.Ops.max_generations(1_000)
     ])
   )
 
