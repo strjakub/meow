@@ -58,6 +58,38 @@ defmodule MeowNx.Mutation do
     Nx.concatenate([genomes, mutated_genomes]) |> MeowNx.Utils.interleave_rows()
   end
 
+  defn whale_mutation(genomes, fitness, iteration, max_iterations) do
+    b = 2  # arg
+
+    {n, length} = Nx.shape(genomes)
+    r = Nx.random_uniform({n, length})
+    c = r * 2
+    a = c * (2 * iteration / max_iterations) + (2 * iteration / max_iterations)
+    l = Nx.random_uniform({length}, -1, 1)
+    p = Nx.random_uniform({length})
+
+    swap_second? = Nx.less(Nx.abs(a), 1)
+    best_idx = Nx.argmax(fitness)
+    best_or_random_idx = Nx.select(swap_second?, best_idx, Nx.random_uniform({n}, 0, n))
+    case_second_genomes = Nx.take(genomes, best_or_random_idx, axis: 0)
+    ad = c
+    |> Nx.multiply(case_second_genomes)
+    |> Nx.subtract(genomes)
+    |> Nx.abs()
+    |> Nx.multiply(a)
+    inner_swap = Nx.subtract(case_second_genomes, ad)
+
+    bubble_attack =
+      Nx.take(genomes, best_idx)
+      |> Nx.subtract(genomes)
+      |> Nx.abs()
+      |> Nx.multiply(Nx.exp(b * l) * Nx.cos(2 * 3.141592653589793 * l))
+      |> Nx.add(Nx.take(genomes, best_idx))
+
+    swap_first? = Nx.less(p, 0.5)
+    Nx.select(swap_first?, inner_swap, bubble_attack)
+  end
+
   @doc """
   Performs bit-flip mutation.
 

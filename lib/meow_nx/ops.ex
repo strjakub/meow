@@ -340,6 +340,21 @@ defmodule MeowNx.Ops do
     }
   end
 
+  @doc type: :mutation
+  def whale(iterations) do
+    %Op{
+      name: "[Nx] Mutation: whale",
+      requires_fitness: true,
+      invalidates_fitness: true,
+      in_representations: [MeowNx.real_representation()],
+      impl: fn population, _ctx ->
+        Population.map_genomes_and_fitness(population, fn genomes, fitness ->
+          Mutation.whale_mutation(genomes, fitness, population.generation, iterations)
+        end)
+      end
+    }
+  end
+
   @doc """
   Builds a bit flip mutation operation.
 
