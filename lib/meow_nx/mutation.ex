@@ -80,18 +80,17 @@ defmodule MeowNx.Mutation do
     |> Nx.multiply(a)
     inner_swap = Nx.subtract(case_second_genomes, ad)
 
-    { inner_swap, fitness }
-    # bubble_attack =
-    #   Nx.take(genomes, best_idx)
-    #   |> Nx.subtract(genomes)
-    #   |> Nx.abs()
-    #   |> Nx.multiply(Nx.exp(b * l) * Nx.cos(2 * 3.141592653589793 * l))
-    #   |> Nx.add(Nx.take(genomes, best_idx))
+    bubble_attack =
+      Nx.take(genomes, best_idx)
+      |> Nx.subtract(genomes)
+      |> Nx.abs()
+      |> Nx.multiply(Nx.exp(b * l) * Nx.cos(2 * 3.141592653589793 * l))
+      |> Nx.add(Nx.take(genomes, best_idx))
 
-    # swap_first? = p
-    #   |> Nx.less(0.5)
-    #   |> Nx.broadcast({n, length})
-    # {Nx.select(swap_first?, inner_swap, bubble_attack), fitness}
+    swap_first? = p
+      |> Nx.less(0.5)
+      |> Nx.broadcast({n, length})
+    {Nx.select(swap_first?, inner_swap, bubble_attack), fitness}
   end
 
   @doc """
