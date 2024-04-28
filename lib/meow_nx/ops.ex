@@ -341,7 +341,7 @@ defmodule MeowNx.Ops do
   end
 
   @doc type: :mutation
-  def whale(iterations, b) do
+  def whale(iterations, b, min_clip, max_clip) do
     %Op{
       name: "[Nx] Mutation: whale",
       requires_fitness: true,
@@ -349,7 +349,7 @@ defmodule MeowNx.Ops do
       in_representations: [MeowNx.real_representation()],
       impl: fn population, _ctx ->
         Population.map_genomes(population, fn genomes ->
-          Mutation.whale_mutation(genomes, population.log[:best_individual].genome, population.generation, iterations, b)
+          Mutation.whale_mutation(genomes, population.log[:best_individual].genome, population.generation, iterations, b, min_clip, max_clip)
         end)
       end
     }

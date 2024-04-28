@@ -45,7 +45,7 @@ algorithm =
     Meow.pipeline([
       # Define a number of evolutionary steps that the population goes through
       MeowNx.Ops.log_best_individual(),
-      MeowNx.Ops.whale(5_000, -0.1),
+      MeowNx.Ops.whale(5_000, 1, -5.12, 5.12),
       MeowNx.Ops.log_metrics(
         %{
           fitness_max: &MeowNx.Metric.fitness_max/2,

@@ -58,7 +58,7 @@ defmodule MeowNx.Mutation do
     Nx.concatenate([genomes, mutated_genomes]) |> MeowNx.Utils.interleave_rows()
   end
 
-  defn whale_mutation(genomes, best_individual, iteration, max_iterations, b) do
+  defn whale_mutation(genomes, best_individual, iteration, max_iterations, b, min_clip, max_clip) do
     {n, length} = Nx.shape(genomes)
     c = Nx.random_uniform({n, 1}, 0.0, 2.0)
     a = c * (2 * (max_iterations - iteration) / max_iterations) - (2 * (max_iterations - iteration) / max_iterations)
@@ -88,6 +88,7 @@ defmodule MeowNx.Mutation do
     |> Nx.less(0.5)
     |> Nx.broadcast({n, length})
     |> Nx.select(inner_swap, bubble_attack)
+    |> Nx.clip(min_clip, max_clip)
   end
 
   @doc """
