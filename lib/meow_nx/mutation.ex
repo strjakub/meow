@@ -58,21 +58,18 @@ defmodule MeowNx.Mutation do
     Nx.concatenate([genomes, mutated_genomes]) |> MeowNx.Utils.interleave_rows()
   end
 
-  defn whale_mutation(genomes, fitness, iteration, max_iterations, b) do
+  defn whale_mutation(genomes, best_individual, iteration, max_iterations, b) do
     {n, length} = Nx.shape(genomes)
-    c = Nx.random_uniform({n, length}, 0.0, 2.0)
+    c = Nx.random_uniform({n, 1}, 0.0, 2.0)
     a = c * (2 * (max_iterations - iteration) / max_iterations) - (2 * (max_iterations - iteration) / max_iterations)
     l = Nx.random_uniform({n}, -1.0, 1.0)
     p = Nx.random_uniform({n, 1})
 
-    swap_second? = a
-    |> Nx.power(2)
-    |> Nx.sum(axes: [1])
-    |> Nx.sqrt()
+    case_second_genomes = a
+    |> Nx.abs()
     |> Nx.less(1)
-    best_idx = Nx.argmax(fitness)
-    best_or_random_idx = Nx.select(swap_second?, best_idx, Nx.random_uniform({n}, 0, n))
-    case_second_genomes = Nx.take(genomes, best_or_random_idx, axis: 0)
+    |> Nx.broadcast({n, length})
+    |> Nx.select(best_individual, Nx.take(genomes, Nx.random_uniform({n}, 0, n), axis: 0))
     ad = c
     |> Nx.multiply(case_second_genomes)
     |> Nx.subtract(genomes)
@@ -81,16 +78,16 @@ defmodule MeowNx.Mutation do
     inner_swap = Nx.subtract(case_second_genomes, ad)
 
     bubble_attack =
-      Nx.take(genomes, best_idx)
+      best_individual
       |> Nx.subtract(genomes)
       |> Nx.abs()
       |> Nx.multiply(Nx.exp(b * l) * Nx.cos(2 * 3.141592653589793 * l))
-      |> Nx.add(Nx.take(genomes, best_idx))
+      |> Nx.add(best_individual)
 
-    swap_first? = p
-      |> Nx.less(0.5)
-      |> Nx.broadcast({n, length})
-    {Nx.select(swap_first?, inner_swap, bubble_attack), fitness}
+    p
+    |> Nx.less(0.5)
+    |> Nx.broadcast({n, length})
+    |> Nx.select(inner_swap, bubble_attack)
   end
 
   @doc """

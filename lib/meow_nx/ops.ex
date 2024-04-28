@@ -348,8 +348,8 @@ defmodule MeowNx.Ops do
       invalidates_fitness: true,
       in_representations: [MeowNx.real_representation()],
       impl: fn population, _ctx ->
-        Population.map_genomes_and_fitness(population, fn genomes, fitness ->
-          Mutation.whale_mutation(genomes, fitness, population.generation, iterations, b)
+        Population.map_genomes(population, fn genomes ->
+          Mutation.whale_mutation(genomes, population.log[:best_individual].genome, population.generation, iterations, b)
         end)
       end
     }
