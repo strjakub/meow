@@ -8,10 +8,10 @@ Mix.install([
   {:nx, "~> 0.3.0"},
   {:vega_lite, "~> 0.1.1"},
   {:jason, "~> 1.4"},
-  {:exla, "~> 0.3.0"}
+  # {:exla, "~> 0.3.0"}
 ])
 
-Nx.Defn.global_default_options(compiler: EXLA)
+# Nx.Defn.global_default_options(compiler: EXLA)
 
 # Define the evaluation function, in this case using Nx to work with MeowNx
 
