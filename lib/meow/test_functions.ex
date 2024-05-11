@@ -1,6 +1,7 @@
-defmodule Problem do
+defmodule Meow.TestFunctions do
   import Nx.Defn
 
+  @spec size() :: 100
   def size, do: 100
 
   def lower_bound, do: -10
