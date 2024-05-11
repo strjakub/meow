@@ -63,7 +63,7 @@ defmodule MeowNx.Mutation do
     c = Nx.random_uniform({n, 1}, 0.0, 2.0)
     coeff = (2 * (max_iterations - iteration) / max_iterations)
     a = Nx.random_uniform({n, 1}, -coeff, coeff)
-    l = Nx.random_uniform({n}, -1.0, 1.0)
+    l = Nx.random_uniform({n, 1}, -1.0, 1.0)
     p = Nx.random_uniform({n, 1})
 
     case_second_genomes = a
