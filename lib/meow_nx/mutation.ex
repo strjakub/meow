@@ -15,6 +15,8 @@ defmodule MeowNx.Mutation do
 
   import Nx.Defn
 
+  @two_pi 2 * :math.pi()
+
   @doc """
   Performs simple uniform replacement mutation.
 
@@ -82,7 +84,7 @@ defmodule MeowNx.Mutation do
       best_individual
       |> Nx.subtract(genomes)
       |> Nx.abs()
-      |> Nx.multiply(Nx.exp(b * l) * Nx.cos(2 * 3.141592653589793 * l))
+      |> Nx.multiply(Nx.exp(b * l) * Nx.cos(@two_pi * l))
       |> Nx.add(best_individual)
 
     p
