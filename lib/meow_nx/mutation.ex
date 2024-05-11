@@ -61,13 +61,14 @@ defmodule MeowNx.Mutation do
   defn whale_mutation(genomes, best_individual, iteration, max_iterations, b, min_clip, max_clip) do
     {n, length} = Nx.shape(genomes)
     c = Nx.random_uniform({n, 1}, 0.0, 2.0)
-    a = c * (2 * (max_iterations - iteration) / max_iterations) - (2 * (max_iterations - iteration) / max_iterations)
+    coeff = (2 * (max_iterations - iteration) / max_iterations)
+    a = Nx.random_uniform({n, 1}, -coeff, coeff)
     l = Nx.random_uniform({n}, -1.0, 1.0)
     p = Nx.random_uniform({n, 1})
 
     case_second_genomes = a
     |> Nx.abs()
-    |> Nx.less(1)
+    |> Nx.less(0.5)
     |> Nx.broadcast({n, length})
     |> Nx.select(best_individual, Nx.take(genomes, Nx.random_uniform({n}, 0, n), axis: 0))
     ad = c
