@@ -1,6 +1,6 @@
 ## Optimized functions
 
-We changed architecture for optimized functions to be available out of the box in the library, without need to implement them each time when we want to use one of more popular ones. We included below functions:
+We changed the architecture for optimized functions to be available out of the box in the library, without need to implement them each time when we want to use one of the more popular ones. We included the below functions:
 - rastrigin (previously only implemented in example file, not in library)
 - translated rastrigin
 - styblinski-tang
@@ -9,30 +9,58 @@ We changed architecture for optimized functions to be available out of the box i
 
 ## Bug with whale
 
-We had another problem in our aplication being that size of the problem and number of iterations needed to be the same, otherwise there was an error. It turned out to be the same bug. More specifically, when these numbers where equal and second bug did not appeared it was because algorithm luckily did not need to make a broadcast. When numbers where different, algorithm could not make a broadcast which was basically column multiplication (we think that it can be a problem with old version of Nx). When we removed bug with size of problem, then whale algorithm started to work properly, although it still has high convergence, but it does not favours 0 anymore.
+We had another problem in our application being that the size of the problem and number of iterations needed to be the same, otherwise there was an error. It turned out to be the same bug. More specifically, when these numbers were equal and the second bug did not appear, it was because the algorithm luckily did not need to make a broadcast. When numbers were different, the algorithm could not make a broadcast, which was basically column multiplication (we think that it can be an issue with old version of Nx). When we removed bug with size of problem, then whale algorithm started to work properly, although it still has high convergence, but it does not favor 0 anymore.
 
 ## Comparision with different CPU implementation
 
-To show the operation of the two previous features we compared our implementation of whale on schwefel problem with the same combination in pyMetaheuristic. 
+To show the operation of the two previous features, we compared our implementation of whale on schwefel problem with the same combination in pyMetaheuristic.
 
 ### Meow
 ──── Summary ────
 
-Total time: 4.196s
+Total time: 2.993s
 Populations: 1
-Population time (mean): 3.771s
+Population time (mean): 2.504s
 Generations (mean): 1000
 
 ──── Best individual ────
 
-Fitness: -41503.7589829703
-Generation: 879
+Fitness: -5.535572927328758e-4
+Generation: 969
 Genome: #Nx.Tensor<
 f64[100]
-[5.239085786231959, 5.238962135704806, 5.238449429565764, 5.245037022293875, 5.238796052472535, 5.239089776523593, 5.239272506483351, 5.239116277781824, 5.239056742977283, 5.2402829832857885, 5.241225250174341, 5.239071524037706, 5.239226434711298, 5.238897831837145, 5.2391265186677405, 5.238940127796969, 5.239189304368862, 5.240685033896715, 5.238792906466692, 5.239136103552854, 5.2392012407903215, 5.2386878384690965, 5.238821805699439, 5.237602380101943, 5.239079934525731, 5.2390753704067965, 5.239074362738069, 5.238889204980779, 5.240266912458755, 5.239095643983339, 5.2432981848775695, 5.2386144770417475, 5.239069091337996, 5.24425764150756, 5.239193198276636, 5.239169511899525, 5.2392219118762595, 5.2388297540502755, 5.22452788091599, 5.238493100845742, 5.243808090469549, 5.238873669823531, 5.238895346118212, 5.239045673161217, 5.239216627738878, 5.239035844572186, 5.241212466505058, 5.2372384393620965, 5.238871151699596, 5.239140261989247, ...]
+[420.96828048064975, 420.9682732655894, 420.9682658567377, 420.9682570173451, 420.9682692131335, 420.9682569291344, 420.9682987052949, 420.9682779497955, 421.0099234817171, 420.9682629323998, 420.96825738296803, 420.9683059699234, 420.9682586699501, 420.9682745747255, 420.96826208164606, 420.96830140309663, 420.96827390295, 420.9683276333096, 420.9682597116473, 420.96826694725354, 420.96826342927756, 420.968267787714, 420.968282845821, 420.9682650250233, 420.9682733390446, 420.9682660224847, 420.9682641885542, 420.96826321541226, 420.96826198582124, 420.9682594723427, 420.9682694422223, 420.96825764831397, 420.96825837738163, 420.96827845014553, 420.9682690516301, 420.9682688843613, 420.9683231786364, 420.96827033904196, 420.96827805561844, 420.9681943087541, 420.9682735562493, 420.9682792135041, 420.9683318271038, 420.9682735520411, 420.9682689903232, 420.9682707279208, 420.9682790091414, 420.9682585617715, 420.9682586833706, 420.9682672325032, ...]
 >
 
 ### Metaheuristic
+
+##### Implementation
+```python
+import time
+import numpy as np
+from pyMetaheuristic.algorithm import whale_optimization_algorithm
+from pyMetaheuristic.test_function import schwefel
+
+parameters = {
+    "hunting_party": 50, 
+    "spiral_param": 1,  
+    "min_values": [-500] * 100, 
+    "max_values": [500] * 100, 
+    "iterations": 1000,
+    "verbose": False
+}
+
+start_time = time.time_ns()
+pso = whale_optimization_algorithm(target_function = schwefel, **parameters)
+end_time = time.time_ns()
+
+variables = pso[:-1]
+minimum   = pso[ -1]
+print('Variables: ', variables , ' Minimum Value Found: ', minimum )
+print(f'time: {(end_time - start_time) * 10**-9} s')
+```
+
+##### Results
 Variables:
 [
  -301.81033656 -303.08629998 -305.55502531 -304.20383548 -302.80007656
@@ -60,4 +88,4 @@ Minimum Value Found:  12402.464980083674
 time: 69.43300883500001 s
 
 ### Conclusion
-Meow implementation is approximately 19 times faster.
+Meow implementation is approximately 28 times faster. Moreover, pyMetaheuristic implements an optimized version of whale algorithm, which should be better. Despite that, the results of it are wrong — found point is not the global minimum.
