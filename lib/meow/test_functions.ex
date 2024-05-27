@@ -9,6 +9,8 @@ defmodule Meow.TestFunctions do
   def upper_bound, do: 10
 
   @two_pi 2 * :math.pi()
+  @e :math.exp(1)
+
 
   @vector 5
 
@@ -24,6 +26,40 @@ defmodule Meow.TestFunctions do
   defn rastrigin_translated(genomes) do
     evaluate_rastrigin(genomes - @vector)
   end
+
+  defn ackley(genomes) do
+    {_, genome_length} = Nx.shape(genomes)
+
+    -20 * Nx.exp(0.2 * Nx.sqrt(Nx.sum(genomes ** 2, axes: [1]) / genome_length)) - Nx.exp(Nx.sum(Nx.cos(genomes * @two_pi), axes: [1]) / genome_length) + 20 + @e
+  end
+
+  defn ackley_translated(genomes) do
+    ackley(genomes - @vector)
+  end
+
+  defn zakharov(genomes) do
+    {n, genome_length} = Nx.shape(genomes)
+    a = Nx.sum(genomes ** 2, axes: [1])
+    b = Nx.sum(genomes * (Nx.iota({n, genome_length}, axis: 1) + 1), axes: [1]) / 2
+
+    -(a + b ** 2 + b ** 4)
+  end
+
+  defn griewank(genomes) do
+    {n, genome_length} = Nx.shape(genomes)
+    a = Nx.sum(genomes ** 2, axes: [1]) / 4000
+    b = Nx.product(Nx.cos(genomes / (Nx.iota({n, genome_length}, axis: 1) + 1) ** 0.5))
+    -(a - b + 1)
+  end
+
+  defn griewank_translated(genomes) do
+    griewank(genomes - @vector)
+  end
+
+  defn zakharov_translated(genomes) do
+    zakharov(genomes - @vector)
+  end
+
 
   defn styblinski_tang(genomes) do
     Nx.sum(
